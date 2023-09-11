@@ -17,6 +17,7 @@ namespace DataProvider.DataProvider.Configuration
             userTypeRepo = new UserTypeRepo(context);
             specialityRepo = new SpecialityRepo(context);
             statusRepo = new StatusRepo(context);
+            doctorShiftRepo = new DoctorShiftRepo(context);
         }
 
         public IDoctorRepo doctorRepo { get; private set; }

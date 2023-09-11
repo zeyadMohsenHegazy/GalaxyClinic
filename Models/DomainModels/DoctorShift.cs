@@ -9,15 +9,19 @@ namespace Models.DomainModels
         public int doctorShiftId { get; set; }
         public DateTime fromDate { get; set; }
         public DateTime toDate { get; set; }
-        public string availableDaysOfweek { get; set; }
+        public string? availableDaysOfweek { get; set; }
         public DateTime fromTime { get; set; }
         public DateTime toTime { get; set; }
         public int sessionDurationMinutes { get; set; }
         public string shiftTitle { get; set; }
+        public bool isCancelled { get; set; }
 
         [ForeignKey("doctor")]
         public int doctorId { get; set; }
         public virtual Doctor doctor { get; set; }
+
+        public virtual ICollection<doctorShiftDay> doctorShiftDays { get; set; }
+
 
     }
 }

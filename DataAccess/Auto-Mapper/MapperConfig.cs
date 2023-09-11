@@ -42,7 +42,23 @@ namespace DataAccess.Auto_Mapper
                 cfg.CreateMap<SpecialityRequest, Speciality>()
                     .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.specialityName))
                     .ForMember(dest => dest.specialityId, opt => opt.MapFrom(src => src.Id));
-
+                cfg.CreateMap<DoctorShift, DoctorShiftResponse>()
+                   .ForMember(dest => dest.Docrtor_Name, opt => opt.MapFrom(src => src.doctor.name))
+                   .ForMember(dest => dest.FromTime, opt => opt.MapFrom(src => src.fromTime))
+                   .ForMember(dest => dest.FromDate, opt => opt.MapFrom(src => src.fromDate))
+                   .ForMember(dest => dest.ToTime, opt => opt.MapFrom(src => src.toTime))
+                   .ForMember(dest => dest.ToDate, opt => opt.MapFrom(src => src.toDate))
+                   .ForMember(dest => dest.shiftTitle, opt => opt.MapFrom(src => src.shiftTitle))
+                   .ForMember(dest => dest.Availble_Days, opt => opt.MapFrom(src => src.availableDaysOfweek))
+                   .ForMember(dest => dest.DoctorShiftCode, opt => opt.MapFrom(src => src.doctorShiftId))
+                   .ForMember(dest => dest.sessionDuration, opt => opt.MapFrom(src => src.sessionDurationMinutes))
+                   .ForMember(dest => dest.shiftDays, opt => opt.MapFrom(src => src.doctorShiftDays));
+                cfg.CreateMap<doctorShiftDay, doctorShiftDayResponse>()
+                    .ForMember(dest => dest.Date_WeekDay, opt => opt.MapFrom(src => src.weekDays))
+                    .ForMember(dest => dest.sessionTimes, opt => opt.MapFrom(src => src.doctorShiftDayTimes));
+                cfg.CreateMap<doctorShiftDayTime, doctorShiftDayTimeResponse>()
+                    .ForMember(dest => dest.Session_From, opt => opt.MapFrom(src => src.fromTime))
+                    .ForMember(dest => dest.Session_To, opt => opt.MapFrom(src => src.toTime));
             });
 
             var mapper = new Mapper(config);

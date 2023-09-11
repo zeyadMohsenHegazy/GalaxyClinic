@@ -4,6 +4,7 @@ using DataAccess.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230911075510_V44")]
+    partial class V44
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -600,7 +603,7 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("Models.DomainModels.doctorShiftDay", b =>
                 {
                     b.HasOne("Models.DomainModels.DoctorShift", "doctorShift")
-                        .WithMany("doctorShiftDays")
+                        .WithMany()
                         .HasForeignKey("doctorShiftId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -611,22 +614,12 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("Models.DomainModels.doctorShiftDayTime", b =>
                 {
                     b.HasOne("Models.DomainModels.doctorShiftDay", "doctorShiftDay")
-                        .WithMany("doctorShiftDayTimes")
+                        .WithMany()
                         .HasForeignKey("doctorShiftDayId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("doctorShiftDay");
-                });
-
-            modelBuilder.Entity("Models.DomainModels.DoctorShift", b =>
-                {
-                    b.Navigation("doctorShiftDays");
-                });
-
-            modelBuilder.Entity("Models.DomainModels.doctorShiftDay", b =>
-                {
-                    b.Navigation("doctorShiftDayTimes");
                 });
 #pragma warning restore 612, 618
         }

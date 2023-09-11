@@ -7,6 +7,7 @@ using Models.API.Request;
 using Models.API.Response.ConfigResponse;
 using Models.API.Response;
 using Models.DomainModels;
+using Azure.Core;
 
 namespace GalaxyClinic.Controllers
 {
@@ -189,11 +190,198 @@ namespace GalaxyClinic.Controllers
         #endregion
 
 
-        #region DoctorShifts
+        #region Doctor Shifts
+
+        [Route("~/Doctor/AddDoctorShift")]
+        [HttpPost]
+        public BaseResponse AddDoctorSift([FromBody]DoctorShiftRequest request)
+        {
+            BaseResponse response = new BaseResponse();
+
+            try
+            {
+                if (_dataProvider.doctorShiftRepo.Add(request))
+                {
+                    response.Success = true;
+                    response.Message = "Added";
+                    response.StatusCode = "200";
+                    response.Result = String.Empty;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Not Added";
+                    response.StatusCode = "417";
+                    response.Result = String.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.StatusCode = "500";
+                response.Message = $"An error occurred: {ex.Message}";
+            }
+            return response;
+        }
+
+
+        [Route("~/doctorShifts/getAllShifts")]
+        [HttpPost]
+        public BaseResponse getAllDoctorsShifts()
+        {
+            BaseResponse response = new BaseResponse();
+            try
+            {
+                List<DoctorShift> shifts = _dataProvider.doctorShiftRepo.GetAll();
+                if (shifts != null)
+                {
+                    var mapper = MapperConfig.InitializeAutoMapper();
+                    List<DoctorShiftResponse> specialityResponses = mapper.Map<List<DoctorShift>, List<DoctorShiftResponse>>(shifts);
+                    
+                    response.Success = true;
+                    response.Message = "Retrieved Successfully";
+                    response.StatusCode = "200";
+                    response.Result = specialityResponses;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Specialities Not Found";
+                    response.StatusCode = "404";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.StatusCode = "500";
+                response.Message = $"An error occurred: {ex.Message}";
+            }
+            return response;
+        }
+
+
+        [Route("~/doctorShifts/removeShift")]
+        [HttpDelete]
+        public BaseResponse removeShift(GeneralRequest request)
+        {
+            BaseResponse response = new BaseResponse();
+            try
+            {
+                if (_dataProvider.doctorShiftRepo.Remove(request))
+                {
+                    response.Success = true;
+                    response.Message = "Deleted Successfully";
+                    response.StatusCode = "200";
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Already Deleted";
+                    response.StatusCode = "400";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.StatusCode = "500";
+                response.Message = $"An error occurred: {ex.Message}";
+            }
+            return response;
+        }
+
+
+        [Route("~/doctorShifts/cancellShift")]
+        [HttpDelete]
+        public BaseResponse cancelShift(GeneralRequest request)
+        {
+            BaseResponse response = new BaseResponse();
+            try
+            {
+                if (_dataProvider.doctorShiftRepo.cancellShift(request))
+                {
+                    response.Success = true;
+                    response.Message = "Deleted Successfully";
+                    response.StatusCode = "200";
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Already Deleted";
+                    response.StatusCode = "400";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.StatusCode = "500";
+                response.Message = $"An error occurred: {ex.Message}";
+            }
+            return response;
+        }
+
+
+        [Route("~/doctorShifts/cancellShiftDay")]
+        [HttpDelete]
+        public BaseResponse cancelShiftDay(GeneralRequest request)
+        {
+            BaseResponse response = new BaseResponse();
+            try
+            {
+                if (_dataProvider.doctorShiftRepo.cancellShiftDay(request))
+                {
+                    response.Success = true;
+                    response.Message = "Deleted Successfully";
+                    response.StatusCode = "200";
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Already Deleted";
+                    response.StatusCode = "400";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.StatusCode = "500";
+                response.Message = $"An error occurred: {ex.Message}";
+            }
+            return response;
+        }
+
+
+        [Route("~/doctorShifts/cancellShiftDayTime")]
+        [HttpDelete]
+        public BaseResponse cancelShiftDayTime(GeneralRequest request)
+        {
+            BaseResponse response = new BaseResponse();
+            try
+            {
+                if (_dataProvider.doctorShiftRepo.cancellShiftDayTime(request))
+                {
+                    response.Success = true;
+                    response.Message = "Deleted Successfully";
+                    response.StatusCode = "200";
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Already Deleted";
+                    response.StatusCode = "400";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.StatusCode = "500";
+                response.Message = $"An error occurred: {ex.Message}";
+            }
+            return response;
+        }
 
         #endregion
-        
-        
+
+
         #region Patient
         [Route("~/Patient/GetOnePatient")]
         [HttpPost]

@@ -9,5 +9,6 @@
         public int doctorId { get; set; }
         public int sessionDuration { get; set; }
         public string shiftTitle { get; set; }
+        public int doctorShiftDayId { get; set; }
     }
 }

@@ -13,12 +13,17 @@ namespace DataAccess.DAL.IRepo
         bool Remove(GeneralRequest request);
 
         //Retrieve All Doctors
-        IEnumerable<DoctorShift> GetAll();
+        List<DoctorShift> GetAll();
 
         //Retrieve One Doctor
         DoctorShift GetOne(GeneralRequest request);
 
-        //Update
-        bool Update(DoctorShiftRequest request);
+        //cancell Shift
+        bool cancellSift(GeneralRequest request);
+        //cancell day
+        bool cancellSiftDay(GeneralRequest request);
+        //cancell time
+        bool cancellSiftDayTime(GeneralRequest request);
+
     }
 }
