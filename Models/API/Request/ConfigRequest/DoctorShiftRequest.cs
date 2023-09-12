@@ -1,7 +1,8 @@
 ﻿namespace Models.API.Request.ConfigRequest
 {
-    public class DoctorShiftRequest : GeneralRequest
+    public class DoctorShiftRequest : BaseRequest
     {
+        public int Id { get; set; }
         public DateTime fromDate { get; set; }
         public DateTime toDate   { get; set; }
         public DateTime fromTime { get; set; }

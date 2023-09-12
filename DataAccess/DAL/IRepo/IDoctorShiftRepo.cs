@@ -10,20 +10,21 @@ namespace DataAccess.DAL.IRepo
         bool Add(DoctorShiftRequest request);
 
         //Remove
-        bool Remove(GeneralRequest request);
+        bool removeDoctorShift(GeneralRequest request);
 
         //Retrieve All Doctors
-        List<DoctorShift> GetAll();
+        List<DoctorShift> getAllShifts();
 
         //Retrieve One Doctor
-        DoctorShift GetOne(GeneralRequest request);
-
+        DoctorShift getDoctorShift(GeneralRequest request);
+        DoctorShift getDoctorActiveShifts(GeneralRequest request);
+        DoctorShift getDoctorAllShifts(GeneralRequest request);
         //cancell Shift
-        bool cancellSift(GeneralRequest request);
+        bool cancellShift(GeneralRequest request);
         //cancell day
-        bool cancellSiftDay(GeneralRequest request);
+        bool cancellShiftDay(GeneralRequest request);
         //cancell time
-        bool cancellSiftDayTime(GeneralRequest request);
+        bool cancellShiftDayTime(GeneralRequest request);
 
     }
 }

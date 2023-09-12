@@ -2,7 +2,8 @@
 {
     public class doctorShiftDayResponse
     {
-        public string Date_WeekDay { get; set; }
+        public int shiftDayCode { get; set; }
+        public DateTime dayWeek { get; set; }
         public List<doctorShiftDayTimeResponse> sessionTimes { get; set; }
     }
 }

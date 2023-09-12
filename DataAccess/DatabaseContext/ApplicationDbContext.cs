@@ -33,9 +33,10 @@ namespace DataAccess.DatabaseContext
         public virtual DbSet<Status> Statuses { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserType> UserTypes { get; set; }
+        public virtual DbSet<systemUser> SystemUsers { get; set; }
         public virtual DbSet<Reservation> Reservations { get; set; }
         public virtual DbSet<ReservationAttachment> ReservationAttachments { get; set; }
-       
+        
 
     }
 }

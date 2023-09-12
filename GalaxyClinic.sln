@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalaxyClinic", "GalaxyClinic\GalaxyClinic.csproj", "{333C2278-4B89-478B-8F73-ED7B7F9F786E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GalaxyClinic", "GalaxyClinic\GalaxyClinic.csproj", "{333C2278-4B89-478B-8F73-ED7B7F9F786E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataProvider", "DataProvider\DataProvider.csproj", "{63F19DA4-2182-41E2-B140-A75C817ADC2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataProvider", "DataProvider\DataProvider.csproj", "{63F19DA4-2182-41E2-B140-A75C817ADC2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{4E3AF5ED-65A7-41F1-A561-30B76AB7663B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{4E3AF5ED-65A7-41F1-A561-30B76AB7663B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{F07CBFCF-9654-4C81-812B-631F8DB95EFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{F07CBFCF-9654-4C81-812B-631F8DB95EFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{FA972709-771F-4A9E-8F18-D10D419B8A72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{F07CBFCF-9654-4C81-812B-631F8DB95EFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F07CBFCF-9654-4C81-812B-631F8DB95EFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F07CBFCF-9654-4C81-812B-631F8DB95EFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA972709-771F-4A9E-8F18-D10D419B8A72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA972709-771F-4A9E-8F18-D10D419B8A72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA972709-771F-4A9E-8F18-D10D419B8A72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA972709-771F-4A9E-8F18-D10D419B8A72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

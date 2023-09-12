@@ -6,7 +6,10 @@ namespace DataAccess.DAL.IRepo
 {
     public interface IUserRepo
     {
-      
+        //Create user for register
+        bool createUserDoctor(userDoctorRequest request);
+        bool createUserSystem(userSystemRequest request);
+        bool createUserPatient(userPatientRequest request);
         //Remove
         bool Remove(GeneralRequest request);
 

@@ -1,7 +1,8 @@
 ﻿namespace Models.API.Request.ConfigRequest
 {
-    public class UserTypeRequest : GeneralRequest
+    public class UserTypeRequest : BaseRequest
     {
+        public int Id { get; set; }
         public string UserTypeName { get; set; }
 
     }

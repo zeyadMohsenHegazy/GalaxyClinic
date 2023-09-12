@@ -10,7 +10,7 @@ namespace Models.DomainModels
         [StringLength(30)]
         public string name { get; set; }
         public string mobileNumber { get; set; }
-
+        public string email { get; set; }
         [ForeignKey("speciality")]
         public int specialityId { get; set; }
         public virtual Speciality speciality { get; set; }

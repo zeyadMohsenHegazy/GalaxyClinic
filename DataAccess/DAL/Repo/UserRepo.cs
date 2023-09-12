@@ -1,11 +1,14 @@
 ﻿using Azure.Core;
 using DataAccess.DAL.IRepo;
 using DataAccess.DatabaseContext;
+using Infrastructure.Helpers;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Models.API.Request;
 using Models.API.Request.ConfigRequest;
 using Models.DomainModels;
 using System.Numerics;
+using System.Text.RegularExpressions;
 
 namespace DataAccess.DAL.Repo
 {
@@ -17,7 +20,190 @@ namespace DataAccess.DAL.Repo
             _context = context;
         }
 
+        //Create New User For Registeration
+        public bool createUserDoctor(userDoctorRequest request)
+        {
+            try
+            {
+                if (validateUserNotExists(request) && 
+                    validatePassword(request) &&
+                    validatePhoneNumberAndEmail(request))
+                {
+                    if (registerNewUser(request) && addDoctor(request))
+                        return true;
+                    else
+                        return false;
+                }
+                //creating the User and the doctor
+                else
+                    return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool createUserSystem(userSystemRequest request)
+        {
+            try
+            {
+                //creating the User and the user system
+                if(registerNewUser(request) && addSystemUser(request))
+                    return true;
+                else
+                    return false;
+            }
+            catch { return false; }
+        }
+        public bool createUserPatient(userPatientRequest request)
+        {
+            try
+            {
+                //creating the User and the user system
+                if (registerNewUser(request) && addPatient(request))
+                    return true;
+                else
+                    return false;
+            }
+            catch { return false; }
+        }
+        private bool registerNewUser(UserRequest request)
+        {
+            try
+            {
+                User user = new User();
+                user.userName = request.userName;
+                user.password = passwordHasher.HashPassword(request.userPassword);
+                user.userTypeId = _context.UserTypes
+                    .FirstOrDefault(z => z.name == request.userType).typeId;
 
+                user.CreatedAt = DateTime.Now;
+                user.CreatedBy = request.UserId;
+                user.IsEnabled = true;
+                user.IsDeleted = false;
+
+                _context.Users.Add(user);
+                _context.SaveChanges();
+                request.Id = user.userId;
+                return true;
+            }
+            catch
+            { return false; }
+        }
+        private bool addDoctor(userDoctorRequest request)
+        {
+            try
+            {
+                Doctor doctor = new Doctor();
+                doctor.name = request.fullName;
+                doctor.mobileNumber = request.mobileNumber;
+                doctor.email = request.email;
+                doctor.specialityId = request.doctorSpeciality;
+                doctor.userId = request.Id;
+
+                doctor.CreatedAt = DateTime.Now;
+                doctor.CreatedBy = request.UserId;
+                doctor.IsEnabled = true;
+                doctor.IsDeleted = false;
+
+                _context.Doctors.Add(doctor);
+                _context.SaveChanges();
+                return true;
+            }
+            catch { return false; }
+        }
+        private bool addPatient(userPatientRequest request)
+        {
+            try
+            {
+                Patient patient = new Patient();
+                patient.name = request.fullName;
+                patient.mobileNumber = request.mobileNumber;
+                patient.email = request.email;
+                patient.userId = request.Id;
+
+                patient.CreatedAt = DateTime.Now;
+                patient.CreatedBy = request.UserId;
+                patient.IsEnabled = true;
+                patient.IsDeleted = false;
+
+                _context.Patients.Add(patient);
+                _context.SaveChanges();
+                return true;
+            }
+            catch { return false; }
+        }
+        private bool addSystemUser(userSystemRequest request)
+        {
+            try
+            {
+                systemUser systemUser = new systemUser();
+                systemUser.name = request.fullName;
+                systemUser.mobileNumber = request.mobileNumber;
+                systemUser.email = request.email;
+                systemUser.userId = request.Id;
+
+                systemUser.CreatedAt = DateTime.Now;
+                systemUser.CreatedBy = request.UserId;
+                systemUser.IsEnabled = true;
+                systemUser.IsDeleted = false;
+
+                _context.SystemUsers.Add(systemUser);
+                _context.SaveChanges();
+                return true;
+            }
+            catch { return false; }
+        }
+
+        #region validation in the creating on the users 
+        //Validation on the mobile Number 
+        private bool validateUserNotExists(UserRequest request)
+        {
+            try
+            {
+                var users = _context.Users
+                    .Where(z => z.userName == request.userName)
+                    .FirstOrDefault();
+                if (users == null)
+                    return true;
+                else
+                    return false;
+            }
+            catch { return false; }
+        }
+        //Validation On the Password
+        private bool validatePassword(UserRequest request)
+        {
+            try
+            {
+                if(request.userPassword.Length >= 11 &&
+                    char.IsUpper(request.userPassword[0]))
+                    return true;
+                else
+                    return false;
+            }
+            catch { return false; }
+        }
+        //Validation on the userName and the mobile number and the email is not existing
+        private bool validatePhoneNumberAndEmail(userDoctorRequest request)
+        {
+            string pattern = @"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$";
+            try
+            {
+                var doctors = _context.Doctors
+                    .Where(z => z.email == request.email &&
+                            z.mobileNumber == request.mobileNumber)
+                    .FirstOrDefault();
+                if (doctors == null && 
+                    request.mobileNumber.Length == 11 &&
+                    Regex.IsMatch(request.email,pattern))
+                    return true;
+                else
+                    return false;
+            }
+            catch { return false; }
+        }
+        #endregion
         public IEnumerable<User> GetAll()
         {
             IEnumerable<User> users = _context.Users
@@ -63,8 +249,8 @@ namespace DataAccess.DAL.Repo
             var updatedUser = _context.Users.Find(request.Id);
             if (updatedUser != null)
             {
-                updatedUser.userName = request.User_Name;
-                updatedUser.password = request.User_Password;
+                updatedUser.userName = request.userName;
+                updatedUser.password = request.userPassword;
 
                 updatedUser.ModifiedAt = DateTime.Now;
                 updatedUser.ModifiedBy = request.UserId;

@@ -8,6 +8,7 @@ using Models.API.Response.ConfigResponse;
 using Models.API.Response;
 using Models.DomainModels;
 using Azure.Core;
+using Azure;
 
 namespace GalaxyClinic.Controllers
 {
@@ -192,7 +193,7 @@ namespace GalaxyClinic.Controllers
 
         #region Doctor Shifts
 
-        [Route("~/Doctor/AddDoctorShift")]
+        [Route("~/Doctor/addDoctorShift")]
         [HttpPost]
         public BaseResponse AddDoctorSift([FromBody]DoctorShiftRequest request)
         {
@@ -232,16 +233,17 @@ namespace GalaxyClinic.Controllers
             BaseResponse response = new BaseResponse();
             try
             {
-                List<DoctorShift> shifts = _dataProvider.doctorShiftRepo.GetAll();
+                List<DoctorShift> shifts = _dataProvider.doctorShiftRepo.getAllShifts();
                 if (shifts != null)
                 {
                     var mapper = MapperConfig.InitializeAutoMapper();
-                    List<DoctorShiftResponse> specialityResponses = mapper.Map<List<DoctorShift>, List<DoctorShiftResponse>>(shifts);
+                    List<DoctorShiftResponse> shiftResponses 
+                        = mapper.Map<List<DoctorShift>, List<DoctorShiftResponse>>(shifts);
                     
                     response.Success = true;
                     response.Message = "Retrieved Successfully";
                     response.StatusCode = "200";
-                    response.Result = specialityResponses;
+                    response.Result = shiftResponses;
                 }
                 else
                 {
@@ -260,6 +262,125 @@ namespace GalaxyClinic.Controllers
         }
 
 
+        [Route("~/doctorShifts/getOneShiftById")]
+        [HttpPost]
+        public BaseResponse GetShiftById(GeneralRequest request)
+        {
+            BaseResponse response = new BaseResponse();
+
+            try
+            {
+                var shift = _dataProvider.doctorShiftRepo.getDoctorShift(request);
+
+                if (shift != null)
+                {
+                    var mapper = MapperConfig.InitializeAutoMapper();
+                    var shiftResponse = mapper.Map<DoctorShift, DoctorShiftResponse>(shift);
+
+                    response.Success = true;
+                    response.StatusCode = "200";
+                    response.Message = "Success";
+                    response.Result = shiftResponse;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.StatusCode = "404";
+                    response.Message = "Speciality Not Found";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.StatusCode = "500";
+                response.Message = $"An error occurred: {ex.Message}";
+            }
+
+            return response;
+        }
+
+
+        [Route("~/doctorShifts/getDoctorActiveShifts")]
+        [HttpPost]
+        public BaseResponse getDoctorACtiveShifts(GeneralRequest request)
+        {
+            BaseResponse response = new BaseResponse();
+
+            try
+            {
+                var shift = _dataProvider.doctorShiftRepo.getDoctorActiveShifts(request);
+
+                if (shift != null)
+                {
+                    var mapper = MapperConfig.InitializeAutoMapper();
+                    var shiftResponse = 
+                        mapper.Map<DoctorShift, DoctorShiftResponse>(shift);
+
+                    response.Success = true;
+                    response.StatusCode = "200";
+                    response.Message = "Success";
+                    response.Result = shiftResponse;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.StatusCode = "404";
+                    response.Message = "Doctor Shift Not Found";
+                    response.Result = String.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.StatusCode = "500";
+                response.Message = $"An error occurred: {ex.Message}";
+                response.Result = ex;
+            }
+
+            return response;
+        }
+
+        [Route("~/doctorShifts/getDoctorAllShifts")]
+        [HttpPost]
+        public BaseResponse getDoctorAllShifts(GeneralRequest request)
+        {
+            BaseResponse response = new BaseResponse();
+
+            try
+            {
+                var shift = _dataProvider.doctorShiftRepo.getDoctorAllShifts(request);
+
+                if (shift != null)
+                {
+                    var mapper = MapperConfig.InitializeAutoMapper();
+                    var shiftResponse =
+                        mapper.Map<DoctorShift, DoctorShiftResponse>(shift);
+
+                    response.Success = true;
+                    response.StatusCode = "200";
+                    response.Message = "Success";
+                    response.Result = shiftResponse;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.StatusCode = "404";
+                    response.Message = "Doctor Shift Not Found";
+                    response.Result = String.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.StatusCode = "500";
+                response.Message = $"An error occurred: {ex.Message}";
+                response.Result = ex;
+            }
+
+            return response;
+        }
+
+
         [Route("~/doctorShifts/removeShift")]
         [HttpDelete]
         public BaseResponse removeShift(GeneralRequest request)
@@ -267,16 +388,16 @@ namespace GalaxyClinic.Controllers
             BaseResponse response = new BaseResponse();
             try
             {
-                if (_dataProvider.doctorShiftRepo.Remove(request))
+                if (_dataProvider.doctorShiftRepo.removeDoctorShift(request))
                 {
                     response.Success = true;
-                    response.Message = "Deleted Successfully";
+                    response.Message = "Removed Successfully";
                     response.StatusCode = "200";
                 }
                 else
                 {
                     response.Success = false;
-                    response.Message = "Already Deleted";
+                    response.Message = "Already Removed";
                     response.StatusCode = "400";
                 }
             }
@@ -300,13 +421,13 @@ namespace GalaxyClinic.Controllers
                 if (_dataProvider.doctorShiftRepo.cancellShift(request))
                 {
                     response.Success = true;
-                    response.Message = "Deleted Successfully";
+                    response.Message = "Cancelled Successfully";
                     response.StatusCode = "200";
                 }
                 else
                 {
                     response.Success = false;
-                    response.Message = "Already Deleted";
+                    response.Message = "Already Cancelled";
                     response.StatusCode = "400";
                 }
             }
@@ -330,13 +451,13 @@ namespace GalaxyClinic.Controllers
                 if (_dataProvider.doctorShiftRepo.cancellShiftDay(request))
                 {
                     response.Success = true;
-                    response.Message = "Deleted Successfully";
+                    response.Message = "Cancelled Successfully";
                     response.StatusCode = "200";
                 }
                 else
                 {
                     response.Success = false;
-                    response.Message = "Already Deleted";
+                    response.Message = "Already Cancelled";
                     response.StatusCode = "400";
                 }
             }
@@ -360,13 +481,13 @@ namespace GalaxyClinic.Controllers
                 if (_dataProvider.doctorShiftRepo.cancellShiftDayTime(request))
                 {
                     response.Success = true;
-                    response.Message = "Deleted Successfully";
+                    response.Message = "Cancelled Successfully";
                     response.StatusCode = "200";
                 }
                 else
                 {
                     response.Success = false;
-                    response.Message = "Already Deleted";
+                    response.Message = "Already Cancelled";
                     response.StatusCode = "400";
                 }
             }
@@ -381,7 +502,100 @@ namespace GalaxyClinic.Controllers
 
         #endregion
 
+        #region Users
+        [Route("~/Users/registerNewDoctor")]
+        [HttpPost]
+        public BaseResponse registerNewDoctor(userDoctorRequest request)
+        {
+            BaseResponse response = new BaseResponse();
+            try
+            {
+                if (_dataProvider.userRepo.createUserDoctor(request))
+                {
+                    response.Success = true;
+                    response.Message = "Added";
+                    response.StatusCode = "200";
+                    response.Result = String.Empty;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Not Added";
+                    response.StatusCode = "417";
+                    response.Result = String.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.StatusCode = "500";
+                response.Message = $"An error occurred: {ex.Message}";
+            }
+            return response;
+        }
 
+        [Route("~/Users/registerNewPatient")]
+        [HttpPost]
+        public BaseResponse registerNewPatient(userPatientRequest request)
+        {
+            BaseResponse response = new BaseResponse();
+            try
+            {
+                if (_dataProvider.userRepo.createUserPatient(request))
+                {
+                    response.Success = true;
+                    response.Message = "Added";
+                    response.StatusCode = "200";
+                    response.Result = String.Empty;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Not Added";
+                    response.StatusCode = "417";
+                    response.Result = String.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.StatusCode = "500";
+                response.Message = $"An error occurred: {ex.Message}";
+            }
+            return response;
+        }
+
+        [Route("~/Users/registerNewUserSystem")]
+        [HttpPost]
+        public BaseResponse registerNewUserSystem(userSystemRequest request)
+        {
+            BaseResponse response = new BaseResponse();
+            try
+            {
+                if (_dataProvider.userRepo.createUserSystem(request))
+                {
+                    response.Success = true;
+                    response.Message = "Added";
+                    response.StatusCode = "200";
+                    response.Result = String.Empty;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Not Added";
+                    response.StatusCode = "417";
+                    response.Result = String.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.StatusCode = "500";
+                response.Message = $"An error occurred: {ex.Message}";
+            }
+            return response;
+        }
+        #endregion
         #region Patient
         [Route("~/Patient/GetOnePatient")]
         [HttpPost]
@@ -551,7 +765,7 @@ namespace GalaxyClinic.Controllers
 
         [Route("~/Speciality/GetOne")]
         [HttpPost]
-        public BaseResponse GetSpecilaity(SpecialityRequest request)
+        public BaseResponse GetSpecilaity(GeneralRequest request)
         {
             BaseResponse response = new BaseResponse();
 

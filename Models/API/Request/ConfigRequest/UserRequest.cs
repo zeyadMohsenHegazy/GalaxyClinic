@@ -1,8 +1,10 @@
 ﻿namespace Models.API.Request.ConfigRequest
 {
-    public class UserRequest : GeneralRequest
+    public class UserRequest : BaseRequest
     {
-        public string User_Name { get; set; }
-        public string User_Password { get; set; }
+        public int Id { get; set; }
+        public string userName { get; set; }
+        public string userPassword { get; set; }
+        public string userType { get; set; }
     }
 }
