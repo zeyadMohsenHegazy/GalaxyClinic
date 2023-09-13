@@ -10,6 +10,9 @@ namespace DataAccess.DAL.IRepo
         bool createUserDoctor(userDoctorRequest request);
         bool createUserSystem(userSystemRequest request);
         bool createUserPatient(userPatientRequest request);
+
+        //Login
+        userLoginResponse userLogin(userLoginRequest request);
         //Remove
         bool Remove(GeneralRequest request);
 

@@ -595,6 +595,40 @@ namespace GalaxyClinic.Controllers
             }
             return response;
         }
+
+
+        [Route("~/Users/login")]
+        [HttpPost]
+        public BaseResponse login(userLoginRequest request)
+        {
+            BaseResponse response = new BaseResponse();
+            userLoginResponse userLogin = new userLoginResponse();
+            try
+            {
+                userLogin = _dataProvider.userRepo.userLogin(request);
+                if (userLogin != null)
+                {
+                    response.Success = true;
+                    response.Message = "Loged successfully";
+                    response.StatusCode = "200";
+                    response.Result = _dataProvider.userRepo.userLogin(request);
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "user name or password is wrong";
+                    response.StatusCode = "417";
+                    response.Result = String.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.StatusCode = "500";
+                response.Message = $"An error occurred: {ex.Message}";
+            }
+            return response;
+        }
         #endregion
         #region Patient
         [Route("~/Patient/GetOnePatient")]

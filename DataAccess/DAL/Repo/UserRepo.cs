@@ -1,4 +1,5 @@
 ﻿using Azure.Core;
+using BCrypt.Net;
 using DataAccess.DAL.IRepo;
 using DataAccess.DatabaseContext;
 using Infrastructure.Helpers;
@@ -27,7 +28,7 @@ namespace DataAccess.DAL.Repo
             {
                 if (validateUserNotExists(request) && 
                     validatePassword(request) &&
-                    validatePhoneNumberAndEmail(request))
+                    validatePhoneNumberAndEmailForDoctor(request))
                 {
                     if (registerNewUser(request) && addDoctor(request))
                         return true;
@@ -47,11 +48,16 @@ namespace DataAccess.DAL.Repo
         {
             try
             {
-                //creating the User and the user system
-                if(registerNewUser(request) && addSystemUser(request))
-                    return true;
-                else
-                    return false;
+                if (validateUserNotExists(request) &&
+                    validatePassword(request) &&
+                    validatePhoneNumberAndEmailForSystemUser(request))
+                {
+                    if (registerNewUser(request) && addSystemUser(request))
+                        return true;
+                    else
+                        return false;
+                }
+                else { return false; }
             }
             catch { return false; }
         }
@@ -59,14 +65,22 @@ namespace DataAccess.DAL.Repo
         {
             try
             {
-                //creating the User and the user system
-                if (registerNewUser(request) && addPatient(request))
-                    return true;
-                else
-                    return false;
+                if (validateUserNotExists(request) &&
+                    validatePassword(request) &&
+                    validatePhoneNumberAndEmailForPatient(request))
+                {
+                    if (registerNewUser(request) && addPatient(request))
+                        return true;
+                    else
+                        return false;
+                }
+                else { return false; }
+                
             }
             catch { return false; }
         }
+
+        #region Insertion into the tables
         private bool registerNewUser(UserRequest request)
         {
             try
@@ -154,6 +168,7 @@ namespace DataAccess.DAL.Repo
             }
             catch { return false; }
         }
+        #endregion
 
         #region validation in the creating on the users 
         //Validation on the mobile Number 
@@ -185,7 +200,7 @@ namespace DataAccess.DAL.Repo
             catch { return false; }
         }
         //Validation on the userName and the mobile number and the email is not existing
-        private bool validatePhoneNumberAndEmail(userDoctorRequest request)
+        private bool validatePhoneNumberAndEmailForDoctor(userDoctorRequest request)
         {
             string pattern = @"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$";
             try
@@ -203,6 +218,101 @@ namespace DataAccess.DAL.Repo
             }
             catch { return false; }
         }
+        private bool validatePhoneNumberAndEmailForSystemUser
+            (userSystemRequest request)
+        {
+            string pattern = @"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$";
+            try
+            {
+                var systemUser = _context.SystemUsers
+                    .Where(z => z.email == request.email &&
+                            z.mobileNumber == request.mobileNumber)
+                    .FirstOrDefault();
+                if (systemUser == null &&
+                    request.mobileNumber.Length == 11 &&
+                    Regex.IsMatch(request.email, pattern))
+                    return true;
+                else
+                    return false;
+            }
+            catch { return false; }
+        }
+        private bool validatePhoneNumberAndEmailForPatient(userPatientRequest request)
+        {
+            string pattern = @"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$";
+            try
+            {
+                var patient = _context.Patients
+                    .Where(z => z.email == request.email &&
+                            z.mobileNumber == request.mobileNumber)
+                    .FirstOrDefault();
+                if (patient == null &&
+                    request.mobileNumber.Length == 11 &&
+                    Regex.IsMatch(request.email, pattern))
+                    return true;
+                else
+                    return false;
+            }
+            catch { return false; }
+        }
+        #endregion
+
+
+        #region Login
+        public userLoginResponse userLogin(userLoginRequest request)
+        {
+            userLoginResponse response = new userLoginResponse();
+            var user = _context.Users
+                .Where(z => z.userName == request.userName)
+                .Include(z => z.userType)
+                .FirstOrDefault();
+            var doc = _context.Doctors
+                .Where(z => z.email == request.userName ||
+                       z.mobileNumber == request.userName)
+                .Include(z => z.user)
+                    .ThenInclude(z => z.userType)
+                .FirstOrDefault();
+            var systemUser = _context.SystemUsers
+               .Where(z => z.email == request.userName ||
+                      z.mobileNumber == request.userName)
+               .Include(z => z.user)
+                   .ThenInclude(z => z.userType)
+               .FirstOrDefault();
+             var patient = _context.Patients
+                .Where(z => z.email == request.userName ||
+                       z.mobileNumber == request.userName)
+                .Include(z => z.user)
+                    .ThenInclude(z => z.userType)
+                .FirstOrDefault();
+            if (user != null && passwordHasher.VarifyPassword
+                                    (request.password, user.password))
+            {
+                response.userType =
+                    user.userType.name;
+            }
+            else if(doc != null && passwordHasher.VarifyPassword
+                                    (request.password ,doc.user.password))
+            {
+                response.userType = doc.user.userType.name;
+            }
+            else if (systemUser != null && passwordHasher.VarifyPassword
+                                    ( request.password,systemUser.user.password))
+            {
+                response.userType = doc.user.userType.name;
+            }
+            else if (patient != null && passwordHasher.VarifyPassword
+                                    (request.password, patient.user.password))
+            {
+                response.userType = doc.user.userType.name;
+            }
+            else { response = null; }
+
+            return response;
+        }
+        #endregion
+
+        #region Reset Password
+        
         #endregion
         public IEnumerable<User> GetAll()
         {
