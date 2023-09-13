@@ -20,17 +20,18 @@ namespace DataAccess.DAL.IRepo
         //reset password 
         bool resetPassword(resertPasswordRequest request);
 
+        #region Crud Operations
+        ////Remove
+        //bool Remove(GeneralRequest request);
 
-        //Remove
-        bool Remove(GeneralRequest request);
+        ////Retrieve All Doctors
+        //IEnumerable<User> GetAll();
 
-        //Retrieve All Doctors
-        IEnumerable<User> GetAll();
+        ////Retrieve One Doctor
+        //User GetOne(GeneralRequest request);
 
-        //Retrieve One Doctor
-        User GetOne(GeneralRequest request);
-
-        //Update
-        bool Update(UserRequest request);
+        ////Update
+        //bool Update(UserRequest request);
+        #endregion
     }
 }

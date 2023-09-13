@@ -190,7 +190,6 @@ namespace GalaxyClinic.Controllers
 
         #endregion
 
-
         #region Doctor Shifts
 
         [Route("~/Doctor/addDoctorShift")]
@@ -502,7 +501,7 @@ namespace GalaxyClinic.Controllers
 
         #endregion
 
-        #region Users
+        #region Users Registeration End Point
         [Route("~/Users/registerNewDoctor")]
         [HttpPost]
         public BaseResponse registerNewDoctor(userDoctorRequest request)
@@ -513,15 +512,15 @@ namespace GalaxyClinic.Controllers
                 if (_dataProvider.userRepo.createUserDoctor(request))
                 {
                     response.Success = true;
-                    response.Message = "Added";
+                    response.Message = "New Doctor Registered Successfully";
                     response.StatusCode = "200";
                     response.Result = String.Empty;
                 }
                 else
                 {
                     response.Success = false;
-                    response.Message = "Not Added";
-                    response.StatusCode = "417";
+                    response.Message = "Something went wrong please try again";
+                    response.StatusCode = "400";
                     response.Result = String.Empty;
                 }
             }
@@ -544,15 +543,15 @@ namespace GalaxyClinic.Controllers
                 if (_dataProvider.userRepo.createUserPatient(request))
                 {
                     response.Success = true;
-                    response.Message = "Added";
+                    response.Message = "New Patient Registered Successfully";
                     response.StatusCode = "200";
                     response.Result = String.Empty;
                 }
                 else
                 {
                     response.Success = false;
-                    response.Message = "Not Added";
-                    response.StatusCode = "417";
+                    response.Message = "Something went worng try again";
+                    response.StatusCode = "400";
                     response.Result = String.Empty;
                 }
             }
@@ -575,15 +574,15 @@ namespace GalaxyClinic.Controllers
                 if (_dataProvider.userRepo.createUserSystem(request))
                 {
                     response.Success = true;
-                    response.Message = "Added";
+                    response.Message = "New System User Registered Successfully";
                     response.StatusCode = "200";
                     response.Result = String.Empty;
                 }
                 else
                 {
                     response.Success = false;
-                    response.Message = "Not Added";
-                    response.StatusCode = "417";
+                    response.Message = "Something went wrong";
+                    response.StatusCode = "400";
                     response.Result = String.Empty;
                 }
             }
@@ -609,7 +608,7 @@ namespace GalaxyClinic.Controllers
                 if (userLogin != null)
                 {
                     response.Success = true;
-                    response.Message = "Loged successfully";
+                    response.Message = "Logged successfully";
                     response.StatusCode = "200";
                     response.Result = userLogin;
                 }
@@ -617,7 +616,7 @@ namespace GalaxyClinic.Controllers
                 {
                     response.Success = false;
                     response.Message = "user name or password is wrong";
-                    response.StatusCode = "417";
+                    response.StatusCode = "400";
                     response.Result = String.Empty;
                 }
             }
@@ -636,22 +635,23 @@ namespace GalaxyClinic.Controllers
         public BaseResponse forgetPassword(forgetPasswordRequest request)
         {
             BaseResponse response = new BaseResponse();
-            forgetPasswordResponse passwordResponse = new forgetPasswordResponse();
+            forgetPasswordResponse forgetResponse = new forgetPasswordResponse();
             try
             {
-                passwordResponse = _dataProvider.userRepo.forgetPassword(request);
-                if (passwordResponse != null)
+                //returns UserId
+                forgetResponse = _dataProvider.userRepo.forgetPassword(request);
+                if (forgetResponse != null)
                 {
                     response.Success = true;
                     response.Message = "You can reset password now";
                     response.StatusCode = "200";
-                    response.Result = passwordResponse;
+                    response.Result = forgetResponse;
                 }
                 else
                 {
                     response.Success = false;
-                    response.Message = "user name or password is wrong";
-                    response.StatusCode = "417";
+                    response.Message = "User Not Found";
+                    response.StatusCode = "404";
                     response.Result = String.Empty;
                 }
             }
@@ -675,15 +675,15 @@ namespace GalaxyClinic.Controllers
                 if (_dataProvider.userRepo.resetPassword(request))
                 {
                     response.Success = true;
-                    response.Message = "Password Reseted Successfully";
+                    response.Message = "Password Reset Successfully";
                     response.StatusCode = "200";
                     response.Result = "";
                 }
                 else
                 {
                     response.Success = false;
-                    response.Message = "user name or password is wrong";
-                    response.StatusCode = "417";
+                    response.Message = "Password must be more than 10 characters";
+                    response.StatusCode = "400";
                     response.Result = String.Empty;
                 }
             }
@@ -696,6 +696,7 @@ namespace GalaxyClinic.Controllers
             return response;
         }
         #endregion
+
         #region Patient
         [Route("~/Patient/GetOnePatient")]
         [HttpPost]
@@ -859,7 +860,6 @@ namespace GalaxyClinic.Controllers
             return response;
         }
         #endregion
-
 
         #region Speciality
 
@@ -1027,7 +1027,6 @@ namespace GalaxyClinic.Controllers
             return response;
         }
         #endregion
-
 
         #region Status
 

@@ -89,8 +89,7 @@ namespace DataAccess.DAL.Repo
                 User user = new User();
                 user.userName = request.userName;
                 user.password = passwordHasher.HashPassword(request.userPassword);
-                user.userTypeId = _context.UserTypes
-                    .FirstOrDefault(z => z.name == request.userType).typeId;
+                user.userTypeId = request.userTypeId;
 
                 user.CreatedAt = DateTime.Now;
                 user.CreatedBy = request.UserId;
@@ -258,7 +257,6 @@ namespace DataAccess.DAL.Repo
         }
         #endregion
 
-
         #region Login
         public userLoginResponse userLogin(userLoginRequest request)
         {
@@ -361,7 +359,12 @@ namespace DataAccess.DAL.Repo
             try
             {
                 var user = _context.Users.Find(request.userId);
-                if (request.userPassword == request.confirmPassword)
+                // checks that the two passwords is identical 
+                // and the password length equal or more than 11 char
+                // and the first letter is Uppercase 
+                if (request.userPassword == request.confirmPassword && 
+                    request.userPassword.Length >= 11 &&
+                    char.IsUpper(request.userPassword[0]))
                 {
                     user.password = passwordHasher.HashPassword(request.userPassword);
                     _context.SaveChanges();
@@ -374,70 +377,70 @@ namespace DataAccess.DAL.Repo
         #endregion
 
         #region Crud Operation
-        public IEnumerable<User> GetAll()
-        {
-            IEnumerable<User> users = _context.Users
-                .Where(x => x.IsDeleted == false && x.IsEnabled == true)
-                .ToList();
+        //public IEnumerable<User> GetAll()
+        //{
+        //    IEnumerable<User> users = _context.Users
+        //        .Where(x => x.IsDeleted == false && x.IsEnabled == true)
+        //        .ToList();
 
-            return users;
-        }
-
-
-        public User GetOne(GeneralRequest request)
-        {
-            var user = _context.Users.FirstOrDefault(z => z.userId == request.Id);
-            if (user != null && user.IsDeleted == false && user.IsEnabled == true)
-            {
-                return user;
-            }
-            else
-            {
-                return null;
-            }
-        }
+        //    return users;
+        //}
 
 
-        public bool Remove(GeneralRequest request)
-        {
-            try
-            {
-                var user = _context.Users.FirstOrDefault(z => z.userId == request.Id);
-                user.IsDeleted = true;
-                _context.SaveChanges();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //public User GetOne(GeneralRequest request)
+        //{
+        //    var user = _context.Users.FirstOrDefault(z => z.userId == request.Id);
+        //    if (user != null && user.IsDeleted == false && user.IsEnabled == true)
+        //    {
+        //        return user;
+        //    }
+        //    else
+        //    {
+        //        return null;
+        //    }
+        //}
 
 
-        public bool Update(UserRequest request)
-        {
-            var updatedUser = _context.Users.Find(request.Id);
-            if (updatedUser != null)
-            {
-                updatedUser.userName = request.userName;
-                updatedUser.password = request.userPassword;
+        //public bool Remove(GeneralRequest request)
+        //{
+        //    try
+        //    {
+        //        var user = _context.Users.FirstOrDefault(z => z.userId == request.Id);
+        //        user.IsDeleted = true;
+        //        _context.SaveChanges();
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
 
-                updatedUser.ModifiedAt = DateTime.Now;
-                updatedUser.ModifiedBy = request.UserId;
 
-                try
-                {
-                    _context.SaveChanges();
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-            else
-                return false;
-        }
+        //public bool Update(UserRequest request)
+        //{
+        //    var updatedUser = _context.Users.Find(request.Id);
+        //    if (updatedUser != null)
+        //    {
+        //        updatedUser.userName = request.userName;
+        //        updatedUser.password = request.userPassword;
+
+        //        updatedUser.ModifiedAt = DateTime.Now;
+        //        updatedUser.ModifiedBy = request.UserId;
+
+        //        try
+        //        {
+        //            _context.SaveChanges();
+        //            return true;
+        //        }
+        //        catch
+        //        {
+        //            return false;
+        //        }
+        //    }
+        //    else
+        //        return false;
+        //}
         #endregion
 
 
