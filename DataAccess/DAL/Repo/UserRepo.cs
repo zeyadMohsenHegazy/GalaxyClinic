@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Models.API.Request;
 using Models.API.Request.ConfigRequest;
+using Models.API.Response.ConfigResponse;
 using Models.DomainModels;
 using System.Numerics;
 using System.Text.RegularExpressions;
@@ -311,9 +312,68 @@ namespace DataAccess.DAL.Repo
         }
         #endregion
 
-        #region Reset Password
-        
+        #region Forget and Reset Password
+        public forgetPasswordResponse forgetPassword(forgetPasswordRequest request)
+        {
+            forgetPasswordResponse response = new forgetPasswordResponse();
+            try
+            {
+                var userType = _context.UserTypes
+                    .Where(z => z.typeId == request.userTypeId)
+                    .FirstOrDefault();
+                if (userType.name == "doctor")
+                {
+                    var doctor = _context.Doctors
+                        .FirstOrDefault(z => z.email == request.userEmailOrMobile || 
+                                        z.mobileNumber == request.userEmailOrMobile);
+                if(doctor != null)
+                    {
+                        response.userId = doctor.userId;
+                    }
+                }
+                else if (userType.name == "patient")
+                {
+                    var patient = _context.Patients
+                        .FirstOrDefault(z => z.email == request.userEmailOrMobile ||
+                                        z.mobileNumber == request.userEmailOrMobile);
+                    if(patient != null)
+                    {
+                        response.userId = patient.userId;
+                    }
+                }
+                else if(userType.name == "userSystem")
+                {
+                    var userSystem = _context.SystemUsers
+                        .FirstOrDefault(z => z.email == request.userEmailOrMobile ||
+                                        z.mobileNumber == request.userEmailOrMobile);
+                    if (userSystem != null)
+                    {
+                        response.userId = userSystem.userId;
+                    }
+                }
+                return response;
+            }
+            catch { return null; }
+        }
+
+        public bool resetPassword(resertPasswordRequest request)
+        {
+            try
+            {
+                var user = _context.Users.Find(request.userId);
+                if (request.userPassword == request.confirmPassword)
+                {
+                    user.password = passwordHasher.HashPassword(request.userPassword);
+                    _context.SaveChanges();
+                    return true;
+                }
+                else { return false; }
+            }
+            catch { return false; }
+        }
         #endregion
+
+        #region Crud Operation
         public IEnumerable<User> GetAll()
         {
             IEnumerable<User> users = _context.Users
@@ -378,6 +438,8 @@ namespace DataAccess.DAL.Repo
             else
                 return false;
         }
+        #endregion
+
 
 
     }

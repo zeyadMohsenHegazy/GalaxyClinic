@@ -611,7 +611,73 @@ namespace GalaxyClinic.Controllers
                     response.Success = true;
                     response.Message = "Loged successfully";
                     response.StatusCode = "200";
-                    response.Result = _dataProvider.userRepo.userLogin(request);
+                    response.Result = userLogin;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "user name or password is wrong";
+                    response.StatusCode = "417";
+                    response.Result = String.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.StatusCode = "500";
+                response.Message = $"An error occurred: {ex.Message}";
+            }
+            return response;
+        }
+
+        //Forget Password
+        [Route("~/Users/forgetPassword")]
+        [HttpPost]
+        public BaseResponse forgetPassword(forgetPasswordRequest request)
+        {
+            BaseResponse response = new BaseResponse();
+            forgetPasswordResponse passwordResponse = new forgetPasswordResponse();
+            try
+            {
+                passwordResponse = _dataProvider.userRepo.forgetPassword(request);
+                if (passwordResponse != null)
+                {
+                    response.Success = true;
+                    response.Message = "You can reset password now";
+                    response.StatusCode = "200";
+                    response.Result = passwordResponse;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "user name or password is wrong";
+                    response.StatusCode = "417";
+                    response.Result = String.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.StatusCode = "500";
+                response.Message = $"An error occurred: {ex.Message}";
+            }
+            return response;
+        }
+
+        //Reset Password
+        [Route("~/Users/resetPassword")]
+        [HttpPost]
+        public BaseResponse resetPassword(resertPasswordRequest request)
+        {
+            BaseResponse response = new BaseResponse();
+            try
+            {
+                if (_dataProvider.userRepo.resetPassword(request))
+                {
+                    response.Success = true;
+                    response.Message = "Password Reseted Successfully";
+                    response.StatusCode = "200";
+                    response.Result = "";
                 }
                 else
                 {

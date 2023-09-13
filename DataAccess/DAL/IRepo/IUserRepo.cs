@@ -1,5 +1,6 @@
 ﻿using Models.API.Request;
 using Models.API.Request.ConfigRequest;
+using Models.API.Response.ConfigResponse;
 using Models.DomainModels;
 
 namespace DataAccess.DAL.IRepo
@@ -13,6 +14,13 @@ namespace DataAccess.DAL.IRepo
 
         //Login
         userLoginResponse userLogin(userLoginRequest request);
+
+        //forget password
+        forgetPasswordResponse forgetPassword(forgetPasswordRequest request);
+        //reset password 
+        bool resetPassword(resertPasswordRequest request);
+
+
         //Remove
         bool Remove(GeneralRequest request);
 
