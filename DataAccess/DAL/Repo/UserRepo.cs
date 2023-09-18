@@ -286,23 +286,27 @@ namespace DataAccess.DAL.Repo
             if (user != null && passwordHasher.VarifyPassword
                                     (request.password, user.password))
             {
+                response.userId = user.userId;
                 response.userType =
                     user.userType.name;
             }
             else if(doc != null && passwordHasher.VarifyPassword
                                     (request.password ,doc.user.password))
             {
+                response.userId = doc.userId;
                 response.userType = doc.user.userType.name;
             }
             else if (systemUser != null && passwordHasher.VarifyPassword
                                     ( request.password,systemUser.user.password))
             {
-                response.userType = doc.user.userType.name;
+                response.userId = systemUser.userId;
+                response.userType = systemUser.user.userType.name;
             }
             else if (patient != null && passwordHasher.VarifyPassword
                                     (request.password, patient.user.password))
             {
-                response.userType = doc.user.userType.name;
+                response.userId = patient.userId;
+                response.userType = patient.user.userType.name;
             }
             else { response = null; }
 

@@ -21,6 +21,28 @@ namespace GalaxyClinic.Controllers
         {
             _dataProvider = dataProvider;
         }
+        //for demo test with the angular
+        int z = 0;
+        #region Test APi
+        [Route("/test/testApi")]
+        [HttpPost]
+        public IActionResult testApi([FromForm] Object obj)
+        {
+            if (obj != null)
+            {
+                for (int i = 0; i <= 1000000000; i++)
+                {
+                    z++;
+                }
+                return Ok( new
+                {
+                    message = "Created"
+                });
+            }
+            else
+                return BadRequest();
+        }
+        #endregion
 
         #region Doctor
 
@@ -501,7 +523,7 @@ namespace GalaxyClinic.Controllers
 
         #endregion
 
-        #region Users Registeration End Point
+        #region Users Registeration&Login End Point
         [Route("~/Users/registerNewDoctor")]
         [HttpPost]
         public BaseResponse registerNewDoctor(userDoctorRequest request)
@@ -604,6 +626,10 @@ namespace GalaxyClinic.Controllers
             userLoginResponse userLogin = new userLoginResponse();
             try
             {
+                //for (int i = 0; i <= 1000000000; i++)
+                //{
+                //    z++;
+                //}
                 userLogin = _dataProvider.userRepo.userLogin(request);
                 if (userLogin != null)
                 {
