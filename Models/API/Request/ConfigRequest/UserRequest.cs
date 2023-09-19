@@ -5,6 +5,6 @@
         public int Id { get; set; }
         public string userName { get; set; }
         public string userPassword { get; set; }
-        public int userTypeId { get; set; }
+        public string userTypeName { get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace DataAccess.DAL.Repo
             _context = context;
         }
 
-        //Create New User For Registeration
+        #region Create New User For Registeration
         public bool createUserDoctor(userDoctorRequest request)
         {
             try
@@ -80,6 +80,7 @@ namespace DataAccess.DAL.Repo
             }
             catch { return false; }
         }
+        #endregion
 
         #region Insertion into the tables
         private bool registerNewUser(UserRequest request)
@@ -89,7 +90,7 @@ namespace DataAccess.DAL.Repo
                 User user = new User();
                 user.userName = request.userName;
                 user.password = passwordHasher.HashPassword(request.userPassword);
-                user.userTypeId = request.userTypeId;
+                user.userTypeId = _context.UserTypes.Where(z => z.name == request.userTypeName).FirstOrDefault().typeId;
 
                 user.CreatedAt = DateTime.Now;
                 user.CreatedBy = request.UserId;
@@ -260,57 +261,77 @@ namespace DataAccess.DAL.Repo
         #region Login
         public userLoginResponse userLogin(userLoginRequest request)
         {
-            userLoginResponse response = new userLoginResponse();
-            var user = _context.Users
-                .Where(z => z.userName == request.userName)
-                .Include(z => z.userType)
-                .FirstOrDefault();
-            var doc = _context.Doctors
-                .Where(z => z.email == request.userName ||
-                       z.mobileNumber == request.userName)
-                .Include(z => z.user)
-                    .ThenInclude(z => z.userType)
-                .FirstOrDefault();
-            var systemUser = _context.SystemUsers
-               .Where(z => z.email == request.userName ||
-                      z.mobileNumber == request.userName)
-               .Include(z => z.user)
-                   .ThenInclude(z => z.userType)
-               .FirstOrDefault();
-             var patient = _context.Patients
-                .Where(z => z.email == request.userName ||
-                       z.mobileNumber == request.userName)
-                .Include(z => z.user)
-                    .ThenInclude(z => z.userType)
-                .FirstOrDefault();
-            if (user != null && passwordHasher.VarifyPassword
-                                    (request.password, user.password))
+            userLoginResponse response = null;
+
+            var user = GetUserByUserName(request.userName);
+            var doc = GetDoctorByEmailOrMobileNumber(request.userName);
+            var systemUser = GetSystemUserByEmailOrMobileNumber(request.userName);
+            var patient = GetPatientByEmailOrMobileNumber(request.userName);
+
+            if (user != null && passwordHasher.VarifyPassword(request.password, user.password))
             {
-                response.userId = user.userId;
-                response.userType =
-                    user.userType.name;
+                response = CreateUserLoginResponse(user);
             }
-            else if(doc != null && passwordHasher.VarifyPassword
-                                    (request.password ,doc.user.password))
+            else if (doc != null && passwordHasher.VarifyPassword(request.password, doc.user.password))
             {
-                response.userId = doc.userId;
-                response.userType = doc.user.userType.name;
+                response = CreateUserLoginResponse(doc.user);
             }
-            else if (systemUser != null && passwordHasher.VarifyPassword
-                                    ( request.password,systemUser.user.password))
+            else if (systemUser != null && passwordHasher.VarifyPassword(request.password, systemUser.user.password))
             {
-                response.userId = systemUser.userId;
-                response.userType = systemUser.user.userType.name;
+                response = CreateUserLoginResponse(systemUser.user);
             }
-            else if (patient != null && passwordHasher.VarifyPassword
-                                    (request.password, patient.user.password))
+            else if (patient != null && passwordHasher.VarifyPassword(request.password, patient.user.password))
             {
-                response.userId = patient.userId;
-                response.userType = patient.user.userType.name;
+                response = CreateUserLoginResponse(patient.user);
             }
-            else { response = null; }
 
             return response;
+        }
+        #endregion
+
+        #region Login Helper Methods
+        private User GetUserByUserName(string userName)
+        {
+            return _context.Users
+                .Where(u => u.userName == userName)
+                .Include(u => u.userType)
+                .FirstOrDefault();
+        }
+
+        private Doctor GetDoctorByEmailOrMobileNumber(string userName)
+        {
+            return _context.Doctors
+                .Where(d => d.email == userName || d.mobileNumber == userName)
+                .Include(d => d.user)
+                .ThenInclude(u => u.userType)
+                .FirstOrDefault();
+        }
+
+        private systemUser GetSystemUserByEmailOrMobileNumber(string userName)
+        {
+            return _context.SystemUsers
+                .Where(su => su.email == userName || su.mobileNumber == userName)
+                .Include(su => su.user)
+                .ThenInclude(u => u.userType)
+                .FirstOrDefault();
+        }
+
+        private Patient GetPatientByEmailOrMobileNumber(string userName)
+        {
+            return _context.Patients
+                .Where(p => p.email == userName || p.mobileNumber == userName)
+                .Include(p => p.user)
+                .ThenInclude(u => u.userType)
+                .FirstOrDefault();
+        }
+
+        private userLoginResponse CreateUserLoginResponse(User user)
+        {
+            return new userLoginResponse
+            {
+                userId = user.userId,
+                userType = user.userType.name
+            };
         }
         #endregion
 
@@ -328,13 +349,13 @@ namespace DataAccess.DAL.Repo
                     var doctor = _context.Doctors
                         .FirstOrDefault(z => z.email == request.userEmailOrMobile || 
                                         z.mobileNumber == request.userEmailOrMobile);
-                if(doctor != null)
+                    if(doctor != null)
                     {
                         response.userId = doctor.userId;
                     }
                 }
                 else if (userType.name == "patient")
-                {
+                {   
                     var patient = _context.Patients
                         .FirstOrDefault(z => z.email == request.userEmailOrMobile ||
                                         z.mobileNumber == request.userEmailOrMobile);
@@ -446,8 +467,6 @@ namespace DataAccess.DAL.Repo
         //        return false;
         //}
         #endregion
-
-
 
     }
 }

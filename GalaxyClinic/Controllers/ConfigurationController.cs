@@ -626,10 +626,10 @@ namespace GalaxyClinic.Controllers
             userLoginResponse userLogin = new userLoginResponse();
             try
             {
-                //for (int i = 0; i <= 1000000000; i++)
-                //{
-                //    z++;
-                //}
+                for (int i = 0; i <= 1000000000; i++)
+                {
+                    z++;
+                }
                 userLogin = _dataProvider.userRepo.userLogin(request);
                 if (userLogin != null)
                 {
