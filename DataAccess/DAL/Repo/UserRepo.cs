@@ -330,7 +330,8 @@ namespace DataAccess.DAL.Repo
             return new userLoginResponse
             {
                 userId = user.userId,
-                userType = user.userType.name
+                userType = user.userType.name,
+                userName = user.userName
             };
         }
         #endregion
@@ -342,7 +343,7 @@ namespace DataAccess.DAL.Repo
             try
             {
                 var userType = _context.UserTypes
-                    .Where(z => z.typeId == request.userTypeId)
+                    .Where(z => z.name == request.userTypeName)
                     .FirstOrDefault();
                 if (userType.name == "doctor")
                 {
