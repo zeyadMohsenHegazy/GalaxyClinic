@@ -617,7 +617,6 @@ namespace GalaxyClinic.Controllers
             return response;
         }
 
-
         [Route("~/Users/login")]
         [HttpPost]
         public BaseResponse login(userLoginRequest request)
