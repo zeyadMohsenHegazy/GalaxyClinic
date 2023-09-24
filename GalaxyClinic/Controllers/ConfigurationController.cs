@@ -588,7 +588,7 @@ namespace GalaxyClinic.Controllers
 
         [Route("~/Users/registerNewUserSystem")]
         [HttpPost]
-        public BaseResponse registerNewUserSystem(userSystemRequest request)
+        public BaseResponse registerNewUserSystem(systemUserRequest request)
         {
             BaseResponse response = new BaseResponse();
             try

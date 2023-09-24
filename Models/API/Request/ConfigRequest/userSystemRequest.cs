@@ -1,9 +1,9 @@
 ﻿namespace Models.API.Request.ConfigRequest
 {
-    public class userSystemRequest : UserRequest
+    public class systemUserRequest : UserRequest
     {
-        public string fullName { get; set; }
-        public string mobileNumber { get; set; }
-        public string email { get; set; }
+        public string systemUserName { get; set; }
+        public string systemUserMobileNumber { get; set; }
+        public string systemUserEmail { get; set; }
     }
 }

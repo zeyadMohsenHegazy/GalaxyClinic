@@ -14,6 +14,8 @@ namespace Models.DomainModels
         [StringLength(11)]
         public string mobileNumber { get; set; }
         public string email { get; set; }
+        public DateTime dateOfBirth { get; set; }
+
         [ForeignKey("user")]
         public int userId { get; set; }
         public virtual User user { get; set; }

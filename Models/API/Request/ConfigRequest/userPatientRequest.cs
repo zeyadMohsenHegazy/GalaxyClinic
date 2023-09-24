@@ -2,8 +2,9 @@
 {
     public class userPatientRequest : UserRequest
     {
-        public string fullName { get; set; }
-        public string mobileNumber { get; set; }
-        public string email { get; set; }
+        public string pateintName { get; set; }
+        public string patientMobileNumber { get; set; }
+        public string patientEmail { get; set; }
+        public DateTime patientDateOfBirth { get; set; }
     }
 }

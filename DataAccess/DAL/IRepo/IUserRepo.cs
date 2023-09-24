@@ -9,7 +9,7 @@ namespace DataAccess.DAL.IRepo
     {
         //Create user for register
         bool createUserDoctor(userDoctorRequest request);
-        bool createUserSystem(userSystemRequest request);
+        bool createUserSystem(systemUserRequest request);
         bool createUserPatient(userPatientRequest request);
 
         //Login

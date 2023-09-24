@@ -45,7 +45,7 @@ namespace DataAccess.DAL.Repo
                 return false;
             }
         }
-        public bool createUserSystem(userSystemRequest request)
+        public bool createUserSystem(systemUserRequest request)
         {
             try
             {
@@ -110,9 +110,9 @@ namespace DataAccess.DAL.Repo
             try
             {
                 Doctor doctor = new Doctor();
-                doctor.name = request.fullName;
-                doctor.mobileNumber = request.mobileNumber;
-                doctor.email = request.email;
+                doctor.name = request.doctorName;
+                doctor.mobileNumber = request.doctorMobileNumber;
+                doctor.email = request.doctorEmail;
                 doctor.specialityId = request.doctorSpeciality;
                 doctor.userId = request.Id;
 
@@ -132,10 +132,11 @@ namespace DataAccess.DAL.Repo
             try
             {
                 Patient patient = new Patient();
-                patient.name = request.fullName;
-                patient.mobileNumber = request.mobileNumber;
-                patient.email = request.email;
+                patient.name = request.pateintName;
+                patient.mobileNumber = request.patientMobileNumber;
+                patient.email = request.patientEmail;
                 patient.userId = request.Id;
+                patient.dateOfBirth = request.patientDateOfBirth;
 
                 patient.CreatedAt = DateTime.Now;
                 patient.CreatedBy = request.UserId;
@@ -148,14 +149,14 @@ namespace DataAccess.DAL.Repo
             }
             catch { return false; }
         }
-        private bool addSystemUser(userSystemRequest request)
+        private bool addSystemUser(systemUserRequest request)
         {
             try
             {
                 systemUser systemUser = new systemUser();
-                systemUser.name = request.fullName;
-                systemUser.mobileNumber = request.mobileNumber;
-                systemUser.email = request.email;
+                systemUser.name = request.systemUserName;
+                systemUser.mobileNumber = request.systemUserMobileNumber;
+                systemUser.email = request.systemUserEmail;
                 systemUser.userId = request.Id;
 
                 systemUser.CreatedAt = DateTime.Now;
@@ -207,12 +208,12 @@ namespace DataAccess.DAL.Repo
             try
             {
                 var doctors = _context.Doctors
-                    .Where(z => z.email == request.email &&
-                            z.mobileNumber == request.mobileNumber)
+                    .Where(z => z.email == request.doctorEmail &&
+                            z.mobileNumber == request.doctorMobileNumber)
                     .FirstOrDefault();
                 if (doctors == null && 
-                    request.mobileNumber.Length == 11 &&
-                    Regex.IsMatch(request.email,pattern))
+                    request.doctorMobileNumber.Length == 11 &&
+                    Regex.IsMatch(request.doctorEmail,pattern))
                     return true;
                 else
                     return false;
@@ -220,18 +221,18 @@ namespace DataAccess.DAL.Repo
             catch { return false; }
         }
         private bool validatePhoneNumberAndEmailForSystemUser
-            (userSystemRequest request)
+            (systemUserRequest request)
         {
             string pattern = @"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$";
             try
             {
                 var systemUser = _context.SystemUsers
-                    .Where(z => z.email == request.email &&
-                            z.mobileNumber == request.mobileNumber)
+                    .Where(z => z.email == request.systemUserEmail &&
+                            z.mobileNumber == request.systemUserMobileNumber)
                     .FirstOrDefault();
                 if (systemUser == null &&
-                    request.mobileNumber.Length == 11 &&
-                    Regex.IsMatch(request.email, pattern))
+                    request.systemUserMobileNumber.Length == 11 &&
+                    Regex.IsMatch(request.systemUserEmail, pattern))
                     return true;
                 else
                     return false;
@@ -244,12 +245,12 @@ namespace DataAccess.DAL.Repo
             try
             {
                 var patient = _context.Patients
-                    .Where(z => z.email == request.email &&
-                            z.mobileNumber == request.mobileNumber)
+                    .Where(z => z.email == request.patientEmail &&
+                            z.mobileNumber == request.patientMobileNumber)
                     .FirstOrDefault();
                 if (patient == null &&
-                    request.mobileNumber.Length == 11 &&
-                    Regex.IsMatch(request.email, pattern))
+                    request.patientMobileNumber.Length == 11 &&
+                    Regex.IsMatch(request.patientEmail, pattern))
                     return true;
                 else
                     return false;
@@ -335,7 +336,8 @@ namespace DataAccess.DAL.Repo
             {
                 userId = user.userId,
                 userType = user.userType.name,
-                userName = user.userName
+                userName = user.userName,
+                userToken = user.password
             };
         }
         #endregion
