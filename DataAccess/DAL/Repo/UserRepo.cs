@@ -390,7 +390,7 @@ namespace DataAccess.DAL.Repo
             {
                 var user = _context.Users.Find(request.userId);
                 // checks that the two passwords is identical 
-                // and the password length equal or more than 11 char
+                // and the password length equal or more than 10 char
                 // and the first letter is Uppercase 
                 if (request.userPassword == request.confirmPassword && 
                     request.userPassword.Length >= 11 &&
