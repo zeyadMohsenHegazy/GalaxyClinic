@@ -262,30 +262,34 @@ namespace DataAccess.DAL.Repo
         #region Login
         public userLoginResponse userLogin(userLoginRequest request)
         {
-            userLoginResponse response = null;
+            userLoginResponse response = new userLoginResponse();
 
             var user = GetUserByUserName(request.userName);
             var doc = GetDoctorByEmailOrMobileNumber(request.userName);
             var systemUser = GetSystemUserByEmailOrMobileNumber(request.userName);
             var patient = GetPatientByEmailOrMobileNumber(request.userName);
 
-            if (user != null && passwordHasher
-                .VarifyPassword(request.password, user.password))
+            if (user != null && (passwordHasher
+                        .VarifyPassword(request.password, user.password) 
+                                    || request.password == user.password))
             {
                 response = CreateUserLoginResponse(user);
             }
-            else if (doc != null && passwordHasher
-                .VarifyPassword(request.password, doc.user.password))
+            else if (doc != null && (passwordHasher
+                        .VarifyPassword(request.password, doc.user.password) 
+                                    || request.password == doc.user.password))
             {
                 response = CreateUserLoginResponse(doc.user);
             }
-            else if (systemUser != null && passwordHasher
-                .VarifyPassword(request.password, systemUser.user.password))
+            else if (systemUser != null && (passwordHasher
+                        .VarifyPassword(request.password, systemUser.user.password) 
+                                    || request.password == systemUser.user.password))
             {
                 response = CreateUserLoginResponse(systemUser.user);
             }
-            else if (patient != null && passwordHasher
-                .VarifyPassword(request.password, patient.user.password))
+            else if (patient != null && (passwordHasher
+                        .VarifyPassword(request.password, patient.user.password) 
+                                    || request.password == patient.user.password))
             {
                 response = CreateUserLoginResponse(patient.user);
             }
