@@ -69,7 +69,8 @@ namespace DataAccess.DAL.Repo
         public IEnumerable<Doctor> GetAll()
         {
             IEnumerable<Doctor> doctors = _context.Doctors
-                .Where(x => x.IsDeleted == false && x.IsEnabled == true)
+                .Include(x => x.speciality)
+                .Where(z => z.IsDeleted == false && z.IsEnabled == true)
                 .ToList();
 
             return doctors;
