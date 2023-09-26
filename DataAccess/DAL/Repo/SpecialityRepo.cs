@@ -22,9 +22,9 @@ namespace DataAccess.DAL.Repo
             try
             {
                 Speciality newSpeciality = new Speciality();
-                newSpeciality.name = speciality.specialityName;
+                newSpeciality.name = speciality.Speciality_Name;
                 newSpeciality.CreatedBy = speciality.UserId;
-                newSpeciality.ModifiedAt = DateTime.Now;
+                newSpeciality.CreatedAt = DateTime.Now;
                 newSpeciality.IsDeleted = false;
                 newSpeciality.IsEnabled = true;
                 _context.Specialities.Add(newSpeciality);
@@ -70,6 +70,8 @@ namespace DataAccess.DAL.Repo
                 var speciality = _context.Specialities
                     .FirstOrDefault(z => z.specialityId == request.Id);
                 speciality.IsDeleted = true;
+                speciality.ModifiedBy = request.UserId;
+                speciality.ModifiedAt = DateTime.Now;
                 _context.SaveChanges();
                 return true;
             }
@@ -81,10 +83,10 @@ namespace DataAccess.DAL.Repo
 
         public bool Update(SpecialityRequest request)
         {
-            var updatedSpecialiity = _context.Specialities.Find(request.Id);
+            var updatedSpecialiity = _context.Specialities.Find(request.Speciality_Code);
             if (updatedSpecialiity != null)
             {
-                updatedSpecialiity.name = request.specialityName;
+                updatedSpecialiity.name = request.Speciality_Name;
 
                 updatedSpecialiity.ModifiedAt = DateTime.Now;
                 updatedSpecialiity.ModifiedBy = request.UserId;

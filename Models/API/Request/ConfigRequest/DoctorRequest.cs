@@ -7,5 +7,6 @@
         public int Speciality_Code { get; set; }
         public string mobileNumber { get; set; }
         public int User_Code { get; set; }
+        public string doctorEmail { get; set; }
     }
 }

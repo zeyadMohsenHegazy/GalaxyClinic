@@ -21,11 +21,13 @@ namespace DataAccess.Auto_Mapper
                     .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.Doctor_Name))
                     .ForMember(dest => dest.doctorId, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dest => dest.mobileNumber, opt => opt.MapFrom(src => src.mobileNumber))
-                    .ForPath(dest => dest.speciality.specialityId, opt => opt.MapFrom(src => src.Speciality_Code));
+                    ///
+                    .ForPath(dest => dest.speciality.name, opt => opt.MapFrom(src => src.Speciality_Code));
                 cfg.CreateMap<Doctor, DoctorResponse>()
                 .ForMember(dest => dest.Doctor_Name, opt => opt.MapFrom(src => src.name))
                     .ForMember(dest => dest.Doctor_Code, opt => opt.MapFrom(src => src.doctorId))
                     .ForMember(dest => dest.mobileNumber, opt => opt.MapFrom(src => src.mobileNumber))
+                    .ForMember(dest => dest.doctorEmail, opt => opt.MapFrom(src => src.email))
                     .ForPath(dest => dest.Speciality_Name, opt => opt.MapFrom(src => src.speciality.name));
                 cfg.CreateMap<PatientRequest, Patient>()
                     .ForMember(dest => dest.patientId, opt => opt.MapFrom(src => src.Id))
@@ -47,8 +49,8 @@ namespace DataAccess.Auto_Mapper
                     .ForMember(dest => dest.Speciality_Code, opt => opt.MapFrom(src => src.specialityId))
                     .ForMember(dest => dest.Speciality_Name, opt => opt.MapFrom(src => src.name));
                 cfg.CreateMap<SpecialityRequest, Speciality>()
-                    .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.specialityName))
-                    .ForMember(dest => dest.specialityId, opt => opt.MapFrom(src => src.Id));
+                    .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.Speciality_Name))
+                    .ForMember(dest => dest.specialityId, opt => opt.MapFrom(src => src.Speciality_Code));
                 cfg.CreateMap<DoctorShift, DoctorShiftResponse>()
                     .ForMember(dest => dest.Doctor_Code, opt => opt.MapFrom(src => src.doctorId))
                     .ForMember(dest => dest.FromTime, opt => opt.MapFrom(src => src.fromTime))

@@ -152,7 +152,7 @@ namespace GalaxyClinic.Controllers
 
 
         [Route("~/Doctor/DeleteDoctor")]
-        [HttpDelete]
+        [HttpPost]
         public BaseResponse DeleteDoctor(GeneralRequest request)
         {
             BaseResponse response = new BaseResponse();
@@ -962,7 +962,7 @@ namespace GalaxyClinic.Controllers
 
         [Route("~/Speciality/AddSpeciality")]
         [HttpPost]
-        public BaseResponse AddDoctor(SpecialityRequest request)
+        public BaseResponse AddSpeciality(SpecialityRequest request)
         {
             BaseResponse response = new BaseResponse();
 
@@ -994,13 +994,13 @@ namespace GalaxyClinic.Controllers
 
 
         [Route("~/Speciality/deleteSpeciality")]
-        [HttpDelete]
+        [HttpPost]
         public BaseResponse DeleteSpeciality(GeneralRequest request)
         {
             BaseResponse response = new BaseResponse();
             try
             {
-                if (_dataProvider.doctorRepo.Remove(request))
+                if (_dataProvider.specialityRepo.Remove(request))
                 {
                     response.Success = true;
                     response.Message = "Deleted Successfully";

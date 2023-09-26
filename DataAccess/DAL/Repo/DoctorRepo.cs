@@ -57,6 +57,7 @@ namespace DataAccess.DAL.Repo
             newDoctor.name = doctor.Doctor_Name.ToLower();
             newDoctor.mobileNumber = doctor.mobileNumber;
             newDoctor.userId = doctor.User_Code;
+            newDoctor.email = doctor.doctorEmail;
 
             newDoctor.CreatedBy = doctor.UserId;
             newDoctor.CreatedAt = DateTime.Now;
@@ -98,6 +99,8 @@ namespace DataAccess.DAL.Repo
             {
                 var doctor = _context.Doctors.FirstOrDefault(z => z.doctorId == request.Id);
                 doctor.IsDeleted = true;
+                doctor.ModifiedAt = DateTime.Now;
+                doctor.ModifiedBy = request.UserId; 
                 _context.SaveChanges();
                 return true;
             }
@@ -110,7 +113,7 @@ namespace DataAccess.DAL.Repo
 
         public bool Update(DoctorRequest request)
         {
-            var updatedDoc = _context.Doctors.Find(request.Id);
+            var updatedDoc = _context.Doctors.Include(z => z.speciality).FirstOrDefault(z=> z.doctorId == request.Id);
             if (updatedDoc != null)
             {
                 updatedDoc.name = request.Doctor_Name;
