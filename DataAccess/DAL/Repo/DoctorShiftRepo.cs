@@ -204,6 +204,7 @@ namespace DataAccess.DAL.Repo
             List<DoctorShift> doctorShifts = _context.DoctorShifts
                 .Where(x => x.IsDeleted == false &&
                             x.IsEnabled == true && x.isCancelled == false)
+                    .Include(z => z.doctor)
                     .Include(z => z.doctorShiftDays 
                         .Where(z => z.isCancelled == false &&
                                 z.IsDeleted == false && z.IsEnabled == true)) 
@@ -266,6 +267,7 @@ namespace DataAccess.DAL.Repo
             var doctorShift = _context.DoctorShifts
                 .Where(z => z.isCancelled == false &&
                         z.IsDeleted == false && z.IsEnabled == true)
+                 .Include(z => z.doctor)
                  .Include(z => z.doctorShiftDays
                         .Where(z => z.isCancelled == false &&
                                 z.IsDeleted == false && z.IsEnabled == true))
@@ -334,6 +336,22 @@ namespace DataAccess.DAL.Repo
                 return true;
             }
             catch { return false; }
+        }
+
+        public List<doctorShiftDayTime> getAlltheShiftDayTimes(GeneralRequest request)
+        {
+            var shiftDayTimes = _context.DoctorShiftDayTimes
+                .Where(z => z.doctorShiftDayId == request.Id)
+                .ToList();
+            if(shiftDayTimes.Count != 0)
+            {
+                return shiftDayTimes;
+            }
+            else
+            {
+                return null;
+            }
+
         }
 
     }

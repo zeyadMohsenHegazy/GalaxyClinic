@@ -6,7 +6,7 @@ namespace Models.API.Response.ConfigResponse
     {
         public int DoctorShiftCode { get; set; }
         public string Availble_Days { get; set; }
-        public string Doctor_Code { get; set; }
+        public string Doctor_Name { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
         public DateTime FromTime { get; set; }

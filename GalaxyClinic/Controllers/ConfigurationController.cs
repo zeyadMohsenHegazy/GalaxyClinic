@@ -401,6 +401,39 @@ namespace GalaxyClinic.Controllers
             return response;
         }
 
+        [Route("~/doctorShifts/getShiftDayTimes")]
+        [HttpPost]
+        public BaseResponse getShiftDayTimes(GeneralRequest request)
+        {
+            BaseResponse response = new BaseResponse();
+            try
+            {
+                var shiftDayTimes = _dataProvider.doctorShiftRepo.getAlltheShiftDayTimes(request);
+                if (shiftDayTimes != null)
+                {
+                    var mapper = MapperConfig.InitializeAutoMapper();
+                    var shiftResponse =
+                        mapper.Map<List<doctorShiftDayTime>, List<doctorShiftDayTimeResponse>>(shiftDayTimes);
+                    response.Success = true;
+                    response.Message = "retrived Successfully";
+                    response.StatusCode = "200";
+                    response.Result = shiftResponse;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Already Removed";
+                    response.StatusCode = "400";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.StatusCode = "500";
+                response.Message = $"An error occurred: {ex.Message}";
+            }
+            return response;
+        }
 
         [Route("~/doctorShifts/removeShift")]
         [HttpDelete]

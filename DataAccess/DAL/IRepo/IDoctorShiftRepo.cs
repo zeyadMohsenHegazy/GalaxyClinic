@@ -19,6 +19,7 @@ namespace DataAccess.DAL.IRepo
         DoctorShift getDoctorShift(GeneralRequest request);
         DoctorShift getDoctorActiveShifts(GeneralRequest request);
         DoctorShift getDoctorAllShifts(GeneralRequest request);
+        List<doctorShiftDayTime> getAlltheShiftDayTimes(GeneralRequest request);
         //cancell Shift
         bool cancellShift(GeneralRequest request);
         //cancell day

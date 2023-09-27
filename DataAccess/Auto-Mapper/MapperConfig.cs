@@ -51,8 +51,9 @@ namespace DataAccess.Auto_Mapper
                 cfg.CreateMap<SpecialityRequest, Speciality>()
                     .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.Speciality_Name))
                     .ForMember(dest => dest.specialityId, opt => opt.MapFrom(src => src.Speciality_Code));
+
                 cfg.CreateMap<DoctorShift, DoctorShiftResponse>()
-                    .ForMember(dest => dest.Doctor_Code, opt => opt.MapFrom(src => src.doctorId))
+                    .ForMember(dest => dest.Doctor_Name, opt => opt.MapFrom(src => src.doctor.name))
                     .ForMember(dest => dest.FromTime, opt => opt.MapFrom(src => src.fromTime))
                     .ForMember(dest => dest.FromDate, opt => opt.MapFrom(src => src.fromDate))
                     .ForMember(dest => dest.ToTime, opt => opt.MapFrom(src => src.toTime))
@@ -62,14 +63,16 @@ namespace DataAccess.Auto_Mapper
                     .ForMember(dest => dest.DoctorShiftCode, opt => opt.MapFrom(src => src.doctorShiftId))
                     .ForMember(dest => dest.sessionDuration, opt => opt.MapFrom(src => src.sessionDurationMinutes))
                     .ForMember(dest => dest.shiftDays, opt => opt.MapFrom(src => src.doctorShiftDays));
+
                 cfg.CreateMap<doctorShiftDay, doctorShiftDayResponse>()
                     .ForMember(dest => dest.shiftDayCode, opt => opt.MapFrom(src => src.doctorShiftDayId))
                     .ForMember(dest => dest.dayWeek, opt => opt.MapFrom(src => src.weekDays))
-                    .ForMember(dest => dest.sessionTimes, opt => opt.MapFrom(src => src.doctorShiftDayTimes));
+                    .ForMember(dest => dest.sessionTimes, opt => opt.MapFrom(src => src.doctorShiftDayTimes))
+                    .ForMember(dest => dest.shiftDay, opt => opt.MapFrom(src => src.days));
                 cfg.CreateMap<doctorShiftDayTime, doctorShiftDayTimeResponse>()
                     .ForMember(dest => dest.shiftDayTimeCode, opt => opt.MapFrom(src => src.doctorShiftDayTimeId))
-                    .ForMember(dest => dest.Session_From, opt => opt.MapFrom(src => src.fromTime))
-                    .ForMember(dest => dest.Session_To, opt => opt.MapFrom(src => src.toTime));
+                    .ForMember(dest => dest.session_From, opt => opt.MapFrom(src => src.fromTime))
+                    .ForMember(dest => dest.session_To, opt => opt.MapFrom(src => src.toTime));
             });
 
             var mapper = new Mapper(config);
